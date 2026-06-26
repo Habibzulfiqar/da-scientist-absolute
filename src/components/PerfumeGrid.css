@@ -132,6 +132,17 @@
     cursor: not-allowed;
 }
 
+.card-add-btn.in-cart {
+    background: #1C1A17;
+    color: #F5F1EA;
+    border-color: #1C1A17;
+}
+
+.card-add-btn.in-cart:hover {
+    background: transparent;
+    color: #1C1A17;
+}
+
 /* Loading State */
 .grid-loading {
     display: flex;

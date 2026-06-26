@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import PerfumeGrid from './components/PerfumeGrid';
 import ProductDetail from './components/ProductDetail';
-import MiniCartDrawer from './components/MiniCartDrawer';
+import CartDrawer from './components/CartDrawer';
+import HeaderCartIcon from './components/HeaderCartIcon';
 import { CartProvider } from './context/CartContext';
 
 console.log('🚀 app.jsx loaded from Vite!');
@@ -57,24 +58,41 @@ const init = () => {
     // 3. Global Mini-Cart Drawer — always present in header/footer
     try {
         let cartRoot = document.getElementById( 'luxury-cart-drawer' );
-        console.log('🔍 app.jsx: cartRoot found:', cartRoot);
         if ( ! cartRoot ) {
             console.log('📦 app.jsx: Creating #luxury-cart-drawer container...');
             cartRoot = document.createElement( 'div' );
             cartRoot.id = 'luxury-cart-drawer';
             document.body.appendChild( cartRoot );
         }
-        console.log('📦 app.jsx: Mounting MiniCartDrawer...');
+        console.log('📦 app.jsx: Mounting CartDrawer...');
         ReactDOM.createRoot( cartRoot ).render(
             <React.StrictMode>
                 <CartProvider>
-                    <MiniCartDrawer />
+                    <CartDrawer />
                 </CartProvider>
             </React.StrictMode>
         );
-        console.log('✅ app.jsx: MiniCartDrawer mounted.');
+        console.log('✅ app.jsx: CartDrawer mounted.');
     } catch (err) {
-        console.error('❌ app.jsx: Error rendering MiniCartDrawer:', err);
+        console.error('❌ app.jsx: Error rendering CartDrawer:', err);
+    }
+
+    // 4. Header Dynamic Cart Icon
+    try {
+        const headerCartRoot = document.getElementById( 'header-cart-icon-root' );
+        console.log('🔍 app.jsx: headerCartRoot found:', headerCartRoot);
+        if ( headerCartRoot ) {
+            ReactDOM.createRoot( headerCartRoot ).render(
+                <React.StrictMode>
+                    <CartProvider>
+                        <HeaderCartIcon />
+                    </CartProvider>
+                </React.StrictMode>
+            );
+            console.log('✅ app.jsx: HeaderCartIcon mounted.');
+        }
+    } catch (err) {
+        console.error('❌ app.jsx: Error rendering HeaderCartIcon:', err);
     }
 };
 

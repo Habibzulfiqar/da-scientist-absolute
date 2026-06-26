@@ -4,17 +4,20 @@ import './ProductDetail.css';
 
 /**
  * ProductDetail — Single Product Page
- * Renders the luxury product detail with image carousel,
- * size variation swatches, and add-to-cart.
+ * Renders the luxury product detail with asymmetric vertical image stack,
+ * size variation swatches, sticky control panel, and editorial accordions.
  * Mounted onto #single-perfume-root in single-product.php.
  */
 export default function ProductDetail( { productId } ) {
-    const [ product, setProduct ]         = useState( null );
-    const [ activeImage, setActiveImage ] = useState( 0 );
+    const [ product, setProduct ]           = useState( null );
     const [ activeVariation, setVariation ] = useState( null );
-    const [ quantity, setQuantity ]       = useState( 1 );
-    const [ zoomed, setZoomed ]           = useState( false );
-    const { addToCart, isLoading }        = useCart();
+    const [ quantity, setQuantity ]         = useState( 1 );
+    const [ openAccordions, setOpenAccordions ] = useState( {
+        scent: false,
+        ingredients: false,
+        shipping: false
+    } );
+    const { addToCart, isLoading, cart }          = useCart();
 
     useEffect( () => {
         if ( ! productId ) return;
@@ -23,11 +26,12 @@ export default function ProductDetail( { productId } ) {
             .then( data => {
                 setProduct( data );
                 if ( data.variations?.length ) setVariation( data.variations[0] );
-            } );
+            } )
+            .catch( err => console.error( 'Failed to fetch product:', err ) );
     }, [ productId ] );
 
     if ( ! product ) {
-        return <div className="product-loading">Loading…</div>;
+        return <div className="product-loading">Loading molecular database…</div>;
     }
 
     const images      = product.images ?? [];
@@ -38,47 +42,46 @@ export default function ProductDetail( { productId } ) {
         addToCart( product.id, quantity, activeVariation?.id ?? null );
     };
 
+    const toggleAccordion = ( key ) => {
+        setOpenAccordions( prev => ( {
+            ...prev,
+            [ key ]: ! prev[ key ]
+        } ) );
+    };
+
     return (
         <section className="product-detail">
 
-            {/* Gallery */}
-            <div className="product-gallery">
-                <div
-                    className={ `gallery-main ${ zoomed ? 'zoomed' : '' }` }
-                    onClick={ () => setZoomed( ! zoomed ) }
-                    title={ zoomed ? 'Click to zoom out' : 'Click to zoom in' }
-                >
-                    { images[ activeImage ] && (
-                        <img
-                            src={ images[ activeImage ].src }
-                            alt={ images[ activeImage ].alt || product.name }
-                        />
-                    ) }
-                </div>
-                { images.length > 1 && (
-                    <div className="gallery-thumbnails">
-                        { images.map( ( img, i ) => (
-                            <button
-                                key={ img.id }
-                                className={ `thumb-btn ${ activeImage === i ? 'active' : '' }` }
-                                onClick={ () => setActiveImage( i ) }
-                            >
-                                <img src={ img.src } alt={ img.alt } />
-                            </button>
-                        ) ) }
+            {/* Asymmetric Vertical Image Stack */}
+            <div className="product-gallery-stack">
+                { images.length === 0 ? (
+                    <div className="gallery-image-wrap">
+                        <div className="image-placeholder" />
                     </div>
+                ) : (
+                    images.map( ( img, i ) => (
+                        <div key={ img.id || i } className="gallery-image-wrap">
+                            <img
+                                src={ img.src }
+                                alt={ img.alt || `${ product.name } ${ i + 1 }` }
+                                loading={ i === 0 ? 'eager' : 'lazy' }
+                            />
+                        </div>
+                    ) )
                 ) }
             </div>
 
-            {/* Summary */}
-            <div className="product-summary">
-                <p className="product-category">
-                    { product.categories?.[0]?.name ?? 'Fragrance' }
-                </p>
-                <h1 className="product-title">{ product.name }</h1>
-                <div className="product-price"
-                    dangerouslySetInnerHTML={ { __html: product.price_html } }
-                />
+            {/* Sticky Control Panel */}
+            <div className="product-summary-sticky">
+                <div className="product-summary-header">
+                    <p className="product-category">
+                        { product.categories?.[0]?.name ?? 'Fragrance' }
+                    </p>
+                    <h1 className="product-title">{ product.name }</h1>
+                    <div className="product-price"
+                        dangerouslySetInnerHTML={ { __html: product.price_html } }
+                    />
+                </div>
 
                 {/* Size / Variation Swatches */}
                 { hasVariations && (
@@ -98,28 +101,83 @@ export default function ProductDetail( { productId } ) {
                     </div>
                 ) }
 
-                {/* Quantity */}
-                <div className="qty-row">
-                    <button className="qty-btn" onClick={ () => setQuantity( q => Math.max( 1, q - 1 ) ) }>−</button>
-                    <span className="qty-value">{ quantity }</span>
-                    <button className="qty-btn" onClick={ () => setQuantity( q => q + 1 ) }>+</button>
+                {/* Quantity and CTA */}
+                <div className="action-row">
+                    <div className="qty-row">
+                        <button className="qty-btn" onClick={ () => setQuantity( q => Math.max( 1, q - 1 ) ) }>−</button>
+                        <span className="qty-value">{ quantity }</span>
+                        <button className="qty-btn" onClick={ () => setQuantity( q => q + 1 ) }>+</button>
+                    </div>
+
+                    {(() => {
+                        const isInCart = cart?.items?.some( item => {
+                            if ( activeVariation ) {
+                                return item.id === activeVariation.id;
+                            }
+                            return item.id === product.id;
+                        } );
+
+                        return (
+                            <button
+                                className={`add-to-cart-cta ${isInCart ? 'in-cart' : ''}`}
+                                disabled={ isLoading }
+                                onClick={ () => isInCart ? window.dispatchEvent( new CustomEvent( 'dascentist-toggle-cart', { detail: { open: true } } ) ) : handleAddToCart() }
+                            >
+                                { isLoading ? 'Adding…' : ( isInCart ? 'Already in Cart' : 'Add to Cart' ) }
+                            </button>
+                        );
+                    })()}
                 </div>
 
-                <button
-                    className="add-to-cart-cta"
-                    disabled={ isLoading }
-                    onClick={ handleAddToCart }
-                >
-                    { isLoading ? 'Adding…' : 'Add to Cart' }
-                </button>
-
-                {/* Description */}
+                {/* Main Product Description */}
                 { product.description && (
                     <div
                         className="product-description"
                         dangerouslySetInnerHTML={ { __html: product.description } }
                     />
                 ) }
+
+                {/* Editorial Accordions */}
+                <div className="product-accordions">
+                    {/* Scent Profile */}
+                    <div className={ `accordion-item ${ openAccordions.scent ? 'open' : '' }` }>
+                        <button className="accordion-trigger" onClick={ () => toggleAccordion( 'scent' ) }>
+                            <span>Scent Profile</span>
+                            <span className="accordion-icon">{ openAccordions.scent ? '−' : '+' }</span>
+                        </button>
+                        <div className="accordion-content">
+                            <div className="accordion-content-inner">
+                                <p>A molecular exploration of dry woods, rich spice, and warm musk. Designed to linger close to the skin, responding uniquely to your body chemistry to create a deeply personal olfactory signature.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Ingredients */}
+                    <div className={ `accordion-item ${ openAccordions.ingredients ? 'open' : '' }` }>
+                        <button className="accordion-trigger" onClick={ () => toggleAccordion( 'ingredients' ) }>
+                            <span>Ingredients</span>
+                            <span className="accordion-icon">{ openAccordions.ingredients ? '−' : '+' }</span>
+                        </button>
+                        <div className="accordion-content">
+                            <div className="accordion-content-inner">
+                                <p className="ingredients-list">alcohol denat., parfum (fragrance), aqua (water), benzyl salicylate, limonene, linalool, citral, geraniol, farnesol, eugenol.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Shipping & Returns */}
+                    <div className={ `accordion-item ${ openAccordions.shipping ? 'open' : '' }` }>
+                        <button className="accordion-trigger" onClick={ () => toggleAccordion( 'shipping' ) }>
+                            <span>Shipping & Returns</span>
+                            <span className="accordion-icon">{ openAccordions.shipping ? '−' : '+' }</span>
+                        </button>
+                        <div className="accordion-content">
+                            <div className="accordion-content-inner">
+                                <p>Complimentary standard shipping across Pakistan. All orders are processed securely via premium Cash on Delivery (COD). Delivery times average 2-4 business days.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </section>

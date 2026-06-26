@@ -12,7 +12,7 @@ export default function PerfumeGrid() {
     const [ filtered, setFiltered ]   = useState( [] );
     const [ loading, setLoading ]     = useState( true );
     const [ activeFilter, setFilter ] = useState( 'all' );
-    const { addToCart, isLoading }    = useCart();
+    const { addToCart, isLoading, cart } = useCart();
 
     useEffect( () => {
         fetch( `${ daScientistGlobals.store_api_url }products?per_page=24` )
@@ -88,13 +88,18 @@ export default function PerfumeGrid() {
                             <p className="card-price"
                                 dangerouslySetInnerHTML={ { __html: product.price_html } }
                             />
-                            <button
-                                className="card-add-btn"
-                                disabled={ isLoading }
-                                onClick={ () => addToCart( product.id, 1 ) }
-                            >
-                                { isLoading ? '…' : 'Add to Cart' }
-                            </button>
+                            {(() => {
+                                const isInCart = cart?.items?.some( item => item.id === product.id );
+                                return (
+                                    <button
+                                        className={`card-add-btn ${isInCart ? 'in-cart' : ''}`}
+                                        disabled={ isLoading }
+                                        onClick={ () => isInCart ? window.dispatchEvent( new CustomEvent( 'dascentist-toggle-cart', { detail: { open: true } } ) ) : addToCart( product.id, 1 ) }
+                                    >
+                                        { isLoading ? '…' : ( isInCart ? 'Already in Cart' : 'Add to Cart' ) }
+                                    </button>
+                                );
+                            })()}
                         </div>
                     </article>
                 ) ) }

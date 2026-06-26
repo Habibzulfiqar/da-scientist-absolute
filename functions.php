@@ -63,7 +63,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
     wp_localize_script( 'dascentist-app', 'daScientistGlobals', array(
         'store_api_url' => esc_url_raw( rest_url( 'wc/store/v1/' ) ),
-        'nonce'         => wp_create_nonce( 'wp_rest' ),
+        'nonce'         => wp_create_nonce( 'wc_store_api' ),
         'checkout_url'  => wc_get_checkout_url(),
         'ajax_url'      => admin_url( 'admin-ajax.php' ),
     ) );
@@ -94,7 +94,7 @@ add_action( 'rest_api_init', function () {
         'methods'             => 'GET',
         'callback'            => function () {
             return new WP_REST_Response( array(
-                'nonce' => wp_create_nonce( 'wp_rest' ),
+                'nonce' => wp_create_nonce( 'wc_store_api' ),
             ), 200 );
         },
         'permission_callback' => '__return_true',
