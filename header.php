@@ -12,7 +12,8 @@
     <header id="masthead" class="site-header">
         <div class="site-branding">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" class="logo-link">
-                <?php bloginfo( 'name' ); ?>
+                DA SCIENTIST
             </a>
+            <p class="logo-tagline">ABSOLUTE</p>
         </div>
     </header>

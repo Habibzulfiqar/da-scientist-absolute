@@ -10,17 +10,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 get_header();
+
+// Retrieve product ID for React mount target before starting loop
+$product_id = 0;
+if ( have_posts() ) {
+    the_post();
+    global $product;
+    $product_id = $product ? $product->get_id() : 0;
+    rewind_posts(); // Reset the loop for fallback execution
+}
 ?>
 
 <div id="product-wrapper" class="container">
     <!-- React/Vite mount target with server-rendered fallback details for single page SEO -->
-    <div id="single-perfume-root">
+    <div id="single-perfume-root" data-id="<?php echo esc_attr( $product_id ); ?>">
         <?php
         while ( have_posts() ) :
             the_post();
             global $product;
             ?>
-            <div class="fallback-product-detail" data-id="<?php echo esc_attr( $product->get_id() ); ?>">
+            <div class="fallback-product-detail">
                 <div class="fallback-gallery">
                     <?php echo $product->get_image('woocommerce_single'); ?>
                 </div>
