@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useCart } from '../context/CartContext';
 import './PerfumeGrid.css';
 
 /**
@@ -14,9 +15,10 @@ import './PerfumeGrid.css';
  *   ?collection=gift      → filters by WC category "gift"
  *   ?collection=limited   → filters by WC category "limited"
  *
- * On mount, parses window.location.search, pre-checks sidebar
- * checkboxes, and fires an immediate filtered fetch — so the user
- * lands with their selection already active, no extra click needed.
+ * Features visible "Add to Cart" button on every card with visual feedback:
+ *   - Normal: "Add to Cart" (charcoal outline)
+ *   - Process: "Adding..." (disabled)
+ *   - Success: "Added ✓" (displays for 2 seconds, fills amber)
  */
 
 // Names to always suppress from the storefront
@@ -80,6 +82,10 @@ export default function PerfumeGrid() {
     const [ filtering,   setFiltering   ] = useState( false );
     const [ activeLabel, setActiveLabel ] = useState( null ); // human-readable filter badge
 
+    // Track add-to-cart state per product ID: 'adding' | 'added' | null
+    const [ addingStates, setAddingStates ] = useState( {} );
+
+    const { addToCart } = useCart();
     const apiBase = daScientistGlobals.store_api_url;
 
     // ── Helpers ─────────────────────────────────────────────────────────────
@@ -164,6 +170,21 @@ export default function PerfumeGrid() {
         return () => window.removeEventListener( 'dascentist-filter-change', handleFilterChange );
     }, [ handleFilterChange ] );
 
+    // ── Quick Add Action ────────────────────────────────────────────────────
+    const handleQuickAdd = async ( e, productId ) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setAddingStates( prev => ( { ...prev, [productId]: 'adding' } ) );
+        await addToCart( productId );
+        setAddingStates( prev => ( { ...prev, [productId]: 'added' } ) );
+
+        // Reset checkmark after 2 seconds
+        setTimeout( () => {
+            setAddingStates( prev => ( { ...prev, [productId]: null } ) );
+        }, 2000 );
+    };
+
     // ── Skeleton ─────────────────────────────────────────────────────────────
     if ( loading ) {
         return (
@@ -216,32 +237,50 @@ export default function PerfumeGrid() {
             {/* Grid */}
             { filtered.length > 0 ? (
                 <div className={ `perfume-grid ${ filtering ? 'is-filtering' : '' }` }>
-                    { filtered.map( product => (
-                        <a
-                            key={ product.id }
-                            href={ product.permalink }
-                            className="product-card"
-                            aria-label={ product.name }
-                        >
-                            <div className="card-image-wrap">
-                                <img
-                                    src={ product.images[0].src }
-                                    alt={ product.images[0].alt || product.name }
-                                    loading="lazy"
-                                />
-                            </div>
-                            <div className="card-body">
-                                <p className="card-category">
-                                    { product.categories?.[0]?.name ?? 'Fragrance' }
-                                </p>
-                                <h3 className="card-title">{ product.name }</h3>
-                                <p
-                                    className="card-price"
-                                    dangerouslySetInnerHTML={ { __html: product.price_html } }
-                                />
-                            </div>
-                        </a>
-                    ) ) }
+                    { filtered.map( product => {
+                        const addingStatus = addingStates[product.id];
+                        return (
+                            <a
+                                key={ product.id }
+                                href={ product.permalink }
+                                className="product-card"
+                                aria-label={ product.name }
+                            >
+                                <div className="card-image-wrap">
+                                    <img
+                                        src={ product.images[0].src }
+                                        alt={ product.images[0].alt || product.name }
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <div className="card-body">
+                                    <p className="card-category">
+                                        { product.categories?.[0]?.name ?? 'Fragrance' }
+                                    </p>
+                                    <h3 className="card-title">{ product.name }</h3>
+                                    <p
+                                        className="card-price"
+                                        dangerouslySetInnerHTML={ { __html: product.price_html } }
+                                    />
+                                    
+                                    {/* Minimalist CTA Outline Button */}
+                                    <button
+                                        className={ `card-add-to-cart-btn ${ addingStatus === 'added' ? 'is-added' : '' }` }
+                                        disabled={ addingStatus === 'adding' }
+                                        onClick={ (e) => handleQuickAdd( e, product.id ) }
+                                    >
+                                        { addingStatus === 'adding' ? (
+                                            'Adding…'
+                                        ) : addingStatus === 'added' ? (
+                                            'Added ✓'
+                                        ) : (
+                                            'Add to Cart'
+                                        ) }
+                                    </button>
+                                </div>
+                            </a>
+                        );
+                    } ) }
                 </div>
             ) : (
                 <div className="grid-empty">

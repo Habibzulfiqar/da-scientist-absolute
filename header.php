@@ -1,3 +1,38 @@
+<?php
+/**
+ * Da Scientist — Header
+ * Dynamic Editor's Pick: pulls newest published product with a real image.
+ */
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+// ── Editor's Pick — latest product with a featured image ─────────────────
+$editors_pick = null;
+$ep_args = array(
+    'post_type'      => 'product',
+    'post_status'    => 'publish',
+    'posts_per_page' => 6,  // sample from newest 6 to find one with image
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+    'meta_query'     => array(
+        array(
+            'key'     => '_thumbnail_id',
+            'compare' => 'EXISTS',
+        ),
+    ),
+);
+$ep_query = new WP_Query( $ep_args );
+if ( $ep_query->have_posts() ) {
+    while ( $ep_query->have_posts() ) {
+        $ep_query->the_post();
+        $ep_product = wc_get_product( get_the_ID() );
+        if ( $ep_product && $ep_product->get_image_id() ) {
+            $editors_pick = $ep_product;
+            break;
+        }
+    }
+    wp_reset_postdata();
+}
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -76,19 +111,35 @@
 
                                 <div class="mega-col-divider"></div>
 
-                                <!-- Col 4: Editor's Pick -->
+                                <!-- Col 4: Editor's Pick — dynamic query -->
                                 <div class="mega-col mega-col-feature">
                                     <div class="mega-feature-label">Editor's Pick</div>
-                                    <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mega-feature-name">Noir Absolu</a>
-                                    <p class="mega-feature-desc">Dark oud and vetiver.<br>Born from the dark hours.</p>
-                                    <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mega-feature-cta">Discover &rarr;</a>
+                                    <?php if ( $editors_pick ) : ?>
+                                        <a href="<?php echo esc_url( $editors_pick->get_permalink() ); ?>" class="mega-feature-name">
+                                            <?php echo esc_html( $editors_pick->get_name() ); ?>
+                                        </a>
+                                        <p class="mega-feature-desc">
+                                            <?php
+                                            $ep_short = wp_strip_all_tags( $editors_pick->get_short_description() );
+                                            echo esc_html( $ep_short
+                                                ? wp_trim_words( $ep_short, 8, '.' )
+                                                : 'A signature expression of the house.'
+                                            );
+                                            ?>
+                                        </p>
+                                        <a href="<?php echo esc_url( $editors_pick->get_permalink() ); ?>" class="mega-feature-cta">Discover &rarr;</a>
+                                    <?php else : ?>
+                                        <span class="mega-feature-name">Noir Absolu</span>
+                                        <p class="mega-feature-desc">A signature expression of the house.</p>
+                                        <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mega-feature-cta">Discover &rarr;</a>
+                                    <?php endif; ?>
                                 </div>
 
                             </div>
                         </div>
                     </li>
 
-                    <!-- MEGA MENU: Notes & Stories -->
+                    <!-- MEGA MENU: Notes and Stories -->
                     <li class="has-mega-menu">
                         <a href="#" class="mega-trigger" aria-haspopup="true" aria-expanded="false">
                             Notes and Stories
@@ -98,27 +149,28 @@
                                 <div class="mega-col">
                                     <h4 class="mega-col-heading">The Journal</h4>
                                     <ul class="mega-links">
-                                        <li><a href="#">The Art of Layering</a></li>
-                                        <li><a href="#">Understanding Oud</a></li>
-                                        <li><a href="#">Fragrance &amp; Memory</a></li>
-                                        <li><a href="#">How to Choose</a></li>
+                                        <?php /* Journal posts — coming soon; swap href once blog is live */ ?>
+                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">The Art of Layering</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">Understanding Oud</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">Fragrance and Memory</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">How to Choose</a></li>
                                     </ul>
                                 </div>
                                 <div class="mega-col-divider"></div>
                                 <div class="mega-col">
                                     <h4 class="mega-col-heading">About the House</h4>
                                     <ul class="mega-links">
-                                        <li><a href="#">Our Philosophy</a></li>
-                                        <li><a href="#">The Ingredients</a></li>
-                                        <li><a href="#">Sustainability</a></li>
-                                        <li><a href="#">Contact</a></li>
+                                        <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">Our Philosophy</a></li>
+                                        <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">The Ingredients</a></li>
+                                        <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">Sustainability</a></li>
+                                        <li><a href="<?php echo esc_url( get_permalink( 26248 ) ); ?>">Contact</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </li>
 
-                    <li><a href="#">About</a></li>
+                    <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">About</a></li>
 
                 </ul>
             </nav>
@@ -138,6 +190,14 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Account / Profile Link -->
+                <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="header-account-link" aria-label="My Account">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
 
                 <!-- React Cart Icon Mount -->
                 <div id="header-cart-icon-root">

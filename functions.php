@@ -57,7 +57,8 @@ add_action( 'wp_enqueue_scripts', function () {
         wp_enqueue_script( 'vite-client', "http://{$vite_host}:5173/@vite/client", array(), null, true );
         wp_enqueue_script( 'dascentist-app', "http://{$vite_host}:5173/src/app.jsx", array( 'vite-client' ), null, true );
     } else {
-        // Load compiled production bundle
+        // Load compiled production bundle (CSS & JS)
+        wp_enqueue_style( 'dascentist-app-compiled', get_template_directory_uri() . '/assets/dist/app.css', array(), '1.0.0' );
         wp_enqueue_script( 'dascentist-app', get_template_directory_uri() . '/assets/dist/app.js', array(), '1.0.0', true );
     }
 
@@ -195,3 +196,163 @@ add_action( 'woocommerce_checkout_order_processed', function ( $order_id ) {
         $order->save();
     }
 }, 30, 1 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 8. CHECKOUT CUSTOMIZATION: Lahore-Based Timelines & Dual Phone Fields
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Add Alternate Phone and refine Email/Phone fields
+add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
+    // 1. Completely unset redundant fields to match Scents N Stories minimal shopify checkout
+    unset( $fields['billing']['billing_company'] );
+    unset( $fields['billing']['billing_state'] );
+    unset( $fields['billing']['billing_postcode'] );
+
+    // 2. First Name & Last Name (inline row)
+    $fields['billing']['billing_first_name']['class'] = array( 'form-row-first' );
+    $fields['billing']['billing_first_name']['priority'] = 10;
+    
+    $fields['billing']['billing_last_name']['class'] = array( 'form-row-last' );
+    $fields['billing']['billing_last_name']['priority'] = 20;
+
+    // 3. Country / Region (full row)
+    $fields['billing']['billing_country']['class'] = array( 'form-row-wide' );
+    $fields['billing']['billing_country']['priority'] = 30;
+
+    // 4. Street Address (full row)
+    $fields['billing']['billing_address_1']['class'] = array( 'form-row-wide' );
+    $fields['billing']['billing_address_1']['priority'] = 40;
+
+    // 5. Apartment, suite, unit (full row, optional)
+    $fields['billing']['billing_address_2']['placeholder'] = _x( 'Area, landmark (optional)', 'placeholder', 'dascentist-absolute' );
+    $fields['billing']['billing_address_2']['class'] = array( 'form-row-wide' );
+    $fields['billing']['billing_address_2']['priority'] = 50;
+
+    // 6. City & Alternate Phone (inline row)
+    $fields['billing']['billing_city']['class'] = array( 'form-row-first' );
+    $fields['billing']['billing_city']['priority'] = 60;
+
+    $fields['billing']['billing_alternate_phone'] = array(
+        'label'        => __( 'Alternate Phone No.', 'dascentist-absolute' ),
+        'placeholder'  => _x( 'e.g. 03XX-XXXXXXX (optional)', 'placeholder', 'dascentist-absolute' ),
+        'required'     => false,
+        'class'        => array( 'form-row-last' ),
+        'clear'        => true,
+        'priority'     => 70,
+    );
+
+    // 7. Primary Phone (full row, required)
+    $fields['billing']['billing_phone']['placeholder'] = _x( '03XX-XXXXXXX', 'placeholder', 'dascentist-absolute' );
+    $fields['billing']['billing_phone']['class'] = array( 'form-row-wide' );
+    $fields['billing']['billing_phone']['priority'] = 80;
+
+    // 8. Email Address (full row, optional)
+    $fields['billing']['billing_email']['required'] = false;
+    $fields['billing']['billing_email']['placeholder'] = _x( 'Email address (optional)', 'placeholder', 'dascentist-absolute' );
+    $fields['billing']['billing_email']['class'] = array( 'form-row-wide' );
+    $fields['billing']['billing_email']['priority'] = 90;
+
+    return $fields;
+} );
+
+// Disable WooCommerce Order Comments (Additional Info Block)
+add_filter( 'woocommerce_enable_order_notes_field', '__return_false' );
+
+// Force default checkout country to Pakistan (PK)
+add_filter( 'default_checkout_billing_country', function() {
+    return 'PK';
+} );
+
+
+// Save Alternate Phone field to WooCommerce order metadata
+add_action( 'woocommerce_checkout_update_order_meta', function ( $order_id ) {
+    if ( ! empty( $_POST['billing_alternate_phone'] ) ) {
+        update_post_meta( $order_id, '_billing_alternate_phone', sanitize_text_field( $_POST['billing_alternate_phone'] ) );
+    }
+} );
+
+// Expose Alternate Phone in WooCommerce Admin Edit Order screen
+add_action( 'woocommerce_admin_order_data_after_billing_address', function ( $order ) {
+    $alt_phone = get_post_meta( $order->get_id(), '_billing_alternate_phone', true );
+    if ( $alt_phone ) {
+        echo '<p><strong>' . __( 'Alternate Phone', 'dascentist-absolute' ) . ':</strong> ' . esc_html( $alt_phone ) . '</p>';
+    }
+} );
+
+// Display Lahore shipping timeline banner directly below the checkout table shipping row
+add_action( 'woocommerce_review_order_after_shipping', function () {
+    ?>
+    <tr class="shipping-timeline-notice-row">
+        <td colspan="2">
+            <div class="checkout-shipping-timeline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="1" y="3" width="15" height="13" rx="2"/>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16"/>
+                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+                <span><strong>Lahore:</strong> Next day delivery (limited areas) | <strong>Other Cities:</strong> 2–4 working days.</span>
+            </div>
+        </td>
+    </tr>
+    <?php
+} );
+
+// ── RELOCATE COUPON FORM TO RIGHT COLUMN ─────────────────────────────────────
+
+// Inject coupon placeholder directly inside form.checkout
+add_action( 'woocommerce_checkout_before_order_review', function() {
+    echo '<div id="dascentist-checkout-coupon-holder"></div>';
+}, 5 );
+
+// Append script to move coupon form to placeholder on load
+add_action( 'wp_footer', function() {
+    if ( is_checkout() && ! is_wc_endpoint_url() ) {
+        ?>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var couponForm = document.querySelector('form.checkout_coupon');
+            var holder = document.getElementById('dascentist-checkout-coupon-holder');
+            if (couponForm && holder) {
+                holder.appendChild(couponForm);
+            }
+        });
+        </script>
+        <?php
+    }
+} );
+
+// Inject a styled luxury trust content module directly below the Place Order CTA
+add_action( 'woocommerce_review_order_after_submit', function() {
+    ?>
+    <div class="checkout-trust-content">
+        <h4 class="trust-title">Why Da Scientist Absolute?</h4>
+        <ul class="trust-list">
+            <li>
+                <span class="trust-icon">&#x2767;</span>
+                <div class="trust-text">
+                    <strong>Authenticity Guaranteed</strong>
+                    <p>Compounded directly in small batches at our Lahore laboratory. 100% pure raw ingredients.</p>
+                </div>
+            </li>
+            <li>
+                <span class="trust-icon">&#x2609;</span>
+                <div class="trust-text">
+                    <strong>Tamper-Proof Seal</strong>
+                    <p>Every bottle is hand-packed, batch-serialized, and shipped in our secure luxury signatures box.</p>
+                </div>
+            </li>
+            <li>
+                <span class="trust-icon">&#x2698;</span>
+                <div class="trust-text">
+                    <strong>Nationwide Delivery</strong>
+                    <p>Cash on Delivery via Trax and TCS. Standard delivery takes 2–4 working days.</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <?php
+} );
+
+
+

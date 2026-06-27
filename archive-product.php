@@ -36,8 +36,26 @@ $product_tags = get_terms( array(
             <h1 class="page-title"><?php woocommerce_page_title(); ?></h1>
             <p class="shop-subtitle">
                 <?php
-                $count = wp_count_posts( 'product' );
-                echo esc_html( $count->publish ?? 0 );
+                // Dynamic clean query matching React grid logic (currently 6 displayable products)
+                $args = array(
+                    'post_type'      => 'product',
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'fields'         => 'ids',
+                );
+                $p_query = get_posts( $args );
+                $display_count = 0;
+                foreach ( $p_query as $pid ) {
+                    $prod = wc_get_product( $pid );
+                    if ( $prod ) {
+                        $name = strtolower( trim( $prod->get_name() ) );
+                        $has_image = (bool) $prod->get_image_id();
+                        if ( $name !== 'content marketing' && $has_image ) {
+                            $display_count++;
+                        }
+                    }
+                }
+                echo esc_html( $display_count );
                 ?> fragrances
             </p>
         </div>

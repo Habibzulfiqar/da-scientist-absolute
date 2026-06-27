@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────
    PerfumeGrid — Luxury Archive Layout
-   Editorial card grid. No cart UI. Full-card links.
+   Editorial card grid with visible Add to Cart button.
    ───────────────────────────────────────────── */
 
 .perfume-grid-section {
@@ -97,12 +97,12 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); /* Slow image zoom (500ms ease) */
     will-change: transform;
 }
 
 .product-card:hover .card-image-wrap img {
-    transform: scale(1.05);
+    transform: scale(1.04); /* Subtle scale zoom */
 }
 
 /* Text block */
@@ -136,13 +136,50 @@
 
 .product-card:hover .card-title { opacity: 0.65; }
 
+/* Reduced visual weight of the price relative to title */
 .card-price {
     font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
+    font-size: 11px; /* Smaller price text */
     font-weight: 300;
-    color: rgba(28, 26, 23, 0.58);
+    color: rgba(28, 26, 23, 0.45); /* Lighter gray color */
     margin: 2px 0 0;
     letter-spacing: 0.03em;
+}
+
+/* ── Minimalist Quick Add Button ── */
+.card-add-to-cart-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--color-dark);
+    color: var(--color-dark);
+    font-family: var(--font-sans);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    margin-top: 12px;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.card-add-to-cart-btn:hover {
+    background: var(--color-dark);
+    color: #FAF8F5;
+}
+
+/* Added state: turns amber checkmark color */
+.card-add-to-cart-btn.is-added {
+    background-color: #C48A55 !important; /* Amber checkmark */
+    border-color: #C48A55 !important;
+    color: #FAF8F5 !important;
+}
+
+.card-add-to-cart-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 /* ── Empty state ──────────────────────────────────────────────────────────── */
