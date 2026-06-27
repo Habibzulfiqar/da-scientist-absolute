@@ -30,15 +30,12 @@
             <nav class="desktop-navigation" aria-label="Primary Navigation">
                 <ul class="nav-menu">
 
-                    <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Shop All</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Fragrances</a></li>
 
                     <!-- MEGA MENU: Collections -->
                     <li class="has-mega-menu">
                         <a href="#" class="mega-trigger" aria-haspopup="true" aria-expanded="false">
                             Collections
-                            <svg class="chevron" width="9" height="6" viewBox="0 0 9 6" fill="none">
-                                <path d="M1 1L4.5 4.5L8 1" stroke="currentColor" stroke-width="1"/>
-                            </svg>
                         </a>
                         <div class="mega-panel" role="region" aria-label="Collections Menu">
                             <div class="mega-inner">
@@ -84,10 +81,7 @@
                     <!-- MEGA MENU: Notes & Stories -->
                     <li class="has-mega-menu">
                         <a href="#" class="mega-trigger" aria-haspopup="true" aria-expanded="false">
-                            Notes &amp; Stories
-                            <svg class="chevron" width="9" height="6" viewBox="0 0 9 6" fill="none">
-                                <path d="M1 1L4.5 4.5L8 1" stroke="currentColor" stroke-width="1"/>
-                            </svg>
+                            Notes and Stories
                         </a>
                         <div class="mega-panel mega-panel--narrow" role="region" aria-label="Notes and Stories Menu">
                             <div class="mega-inner">
@@ -157,15 +151,13 @@
             <nav class="mobile-panel-nav">
                 <ul>
                     <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Shop All</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Fragrances</a></li>
 
                     <!-- Mobile Accordion: Collections -->
                     <li class="mobile-accordion-item">
                         <button class="mobile-accordion-trigger" aria-expanded="false">
                             Collections
-                            <svg class="acc-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
-                                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.2"/>
-                            </svg>
+                            <span class="acc-indicator" aria-hidden="true">+</span>
                         </button>
                         <ul class="mobile-accordion-body">
                             <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=oud' ) ); ?>">Oud &amp; Resinous</a></li>
@@ -178,10 +170,8 @@
                     <!-- Mobile Accordion: Notes & Stories -->
                     <li class="mobile-accordion-item">
                         <button class="mobile-accordion-trigger" aria-expanded="false">
-                            Notes &amp; Stories
-                            <svg class="acc-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
-                                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.2"/>
-                            </svg>
+                            Notes and Stories
+                            <span class="acc-indicator" aria-hidden="true">+</span>
                         </button>
                         <ul class="mobile-accordion-body">
                             <li><a href="#">The Art of Layering</a></li>
