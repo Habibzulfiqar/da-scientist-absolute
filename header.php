@@ -30,50 +30,60 @@
             <nav class="desktop-navigation" aria-label="Primary Navigation">
                 <ul class="nav-menu">
 
-                    <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Fragrances</a></li>
-
-                    <!-- MEGA MENU: Collections -->
+                    <!-- MEGA MENU: Fragrances (unified catalog hub) -->
                     <li class="has-mega-menu">
-                        <a href="#" class="mega-trigger" aria-haspopup="true" aria-expanded="false">
-                            Collections
+                        <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mega-trigger" aria-haspopup="true" aria-expanded="false">
+                            Fragrances
                         </a>
-                        <div class="mega-panel" role="region" aria-label="Collections Menu">
+                        <div class="mega-panel" role="region" aria-label="Fragrances Menu">
                             <div class="mega-inner">
+
+                                <!-- Col 1: Discover -->
                                 <div class="mega-col">
-                                    <h4 class="mega-col-heading">New Arrivals</h4>
+                                    <h4 class="mega-col-heading">Discover</h4>
                                     <ul class="mega-links">
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">All Fragrances</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Latest Drops</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Limited Editions</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Gift Sets</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">View All Fragrances</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?orderby=date' ) ); ?>">New Arrivals</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?orderby=popularity' ) ); ?>">Best Sellers</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?collection=gift' ) ); ?>">Gift Sets</a></li>
                                     </ul>
                                 </div>
+
                                 <div class="mega-col-divider"></div>
+
+                                <!-- Col 2: By Collection -->
                                 <div class="mega-col">
-                                    <h4 class="mega-col-heading">By Fragrance Family</h4>
+                                    <h4 class="mega-col-heading">By Collection</h4>
                                     <ul class="mega-links">
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=oud' ) ); ?>">Oud &amp; Resinous</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=floral' ) ); ?>">Floral &amp; Rose</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=citrus' ) ); ?>">Citrus &amp; Fresh</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=unisex' ) ); ?>">Woody &amp; Musky</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?collection=private' ) ); ?>">Private Blends</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?collection=signature' ) ); ?>">Signature Series</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?collection=limited' ) ); ?>">Limited Editions</a></li>
                                     </ul>
                                 </div>
+
                                 <div class="mega-col-divider"></div>
+
+                                <!-- Col 3: By Scent Family -->
                                 <div class="mega-col">
-                                    <h4 class="mega-col-heading">By Occasion</h4>
+                                    <h4 class="mega-col-heading">By Scent Family</h4>
                                     <ul class="mega-links">
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Everyday Wear</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Evening &amp; Events</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Gifting</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Signature Scents</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?family=oud' ) ); ?>">Oud and Resinous</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?family=floral' ) ); ?>">Floral and Rose</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?family=citrus' ) ); ?>">Citrus and Fresh</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/shop/?family=woody' ) ); ?>">Woody and Musky</a></li>
                                     </ul>
                                 </div>
+
+                                <div class="mega-col-divider"></div>
+
+                                <!-- Col 4: Editor's Pick -->
                                 <div class="mega-col mega-col-feature">
                                     <div class="mega-feature-label">Editor's Pick</div>
                                     <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mega-feature-name">Noir Absolu</a>
-                                    <p class="mega-feature-desc">Dark oud & vetiver.<br>Born from the dark hours.</p>
-                                    <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mega-feature-cta">Discover →</a>
+                                    <p class="mega-feature-desc">Dark oud and vetiver.<br>Born from the dark hours.</p>
+                                    <a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mega-feature-cta">Discover &rarr;</a>
                                 </div>
+
                             </div>
                         </div>
                     </li>
@@ -151,19 +161,20 @@
             <nav class="mobile-panel-nav">
                 <ul>
                     <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Fragrances</a></li>
-
-                    <!-- Mobile Accordion: Collections -->
+                    <!-- Mobile Accordion: Fragrances -->
                     <li class="mobile-accordion-item">
                         <button class="mobile-accordion-trigger" aria-expanded="false">
-                            Collections
+                            Fragrances
                             <span class="acc-indicator" aria-hidden="true">+</span>
                         </button>
                         <ul class="mobile-accordion-body">
-                            <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=oud' ) ); ?>">Oud &amp; Resinous</a></li>
-                            <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=floral' ) ); ?>">Floral &amp; Rose</a></li>
-                            <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=citrus' ) ); ?>">Citrus &amp; Fresh</a></li>
-                            <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=unisex' ) ); ?>">Woody &amp; Musky</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">View All</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/shop/?collection=signature' ) ); ?>">Signature Series</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/shop/?collection=private' ) ); ?>">Private Blends</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/shop/?family=oud' ) ); ?>">Oud and Resinous</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/shop/?family=floral' ) ); ?>">Floral and Rose</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/shop/?family=citrus' ) ); ?>">Citrus and Fresh</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/shop/?family=woody' ) ); ?>">Woody and Musky</a></li>
                         </ul>
                     </li>
 

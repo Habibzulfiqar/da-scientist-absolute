@@ -25,6 +25,34 @@
     color: rgba(28, 26, 23, 0.38);
 }
 
+/* Active URL-param filter badge */
+.grid-active-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1C1A17;
+    border: 1px solid rgba(28, 26, 23, 0.2);
+    padding: 5px 12px 5px 14px;
+    margin-right: auto; /* push count to the right */
+}
+
+.grid-filter-clear-x {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(28, 26, 23, 0.4);
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s;
+}
+.grid-filter-clear-x:hover { color: #1C1A17; }
+
 .filtering-indicator {
     font-style: italic;
     color: rgba(28, 26, 23, 0.3);
