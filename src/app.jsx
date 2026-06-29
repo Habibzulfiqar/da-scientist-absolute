@@ -4,6 +4,9 @@ import PerfumeGrid from './components/PerfumeGrid';
 import ProductDetail from './components/ProductDetail';
 import CartDrawer from './components/CartDrawer';
 import HeaderCartIcon from './components/HeaderCartIcon';
+import OrderTracking from './components/OrderTracking';
+import FAQAccordion from './components/FAQAccordion';
+import ContactForm from './components/ContactForm';
 import { CartProvider } from './context/CartContext';
 
 console.log('🚀 app.jsx loaded from Vite!');
@@ -93,6 +96,57 @@ const init = () => {
         }
     } catch (err) {
         console.error('❌ app.jsx: Error rendering HeaderCartIcon:', err);
+    }
+
+    // 5. Secure Order Tracking — mounted on /track-order page
+    const trackRoot = document.getElementById( 'order-track-root' );
+    console.log('🔍 app.jsx: trackRoot found:', trackRoot);
+    if ( trackRoot ) {
+        try {
+            console.log('📦 app.jsx: Mounting OrderTracking...');
+            ReactDOM.createRoot( trackRoot ).render(
+                <React.StrictMode>
+                    <OrderTracking />
+                </React.StrictMode>
+            );
+            console.log('✅ app.jsx: OrderTracking mounted.');
+        } catch (err) {
+            console.error('❌ app.jsx: Error rendering OrderTracking:', err);
+        }
+    }
+
+    // 6. FAQ Accordion — mounted on /faq page
+    const faqRoot = document.getElementById( 'faq-accordion-root' );
+    console.log('🔍 app.jsx: faqRoot found:', faqRoot);
+    if ( faqRoot ) {
+        try {
+            console.log('📦 app.jsx: Mounting FAQAccordion...');
+            ReactDOM.createRoot( faqRoot ).render(
+                <React.StrictMode>
+                    <FAQAccordion />
+                </React.StrictMode>
+            );
+            console.log('✅ app.jsx: FAQAccordion mounted.');
+        } catch (err) {
+            console.error('❌ app.jsx: Error rendering FAQAccordion:', err);
+        }
+    }
+
+    // 7. Contact Form — mounted on /contact page
+    const contactRoot = document.getElementById( 'contact-root' );
+    console.log('🔍 app.jsx: contactRoot found:', contactRoot);
+    if ( contactRoot ) {
+        try {
+            console.log('📦 app.jsx: Mounting ContactForm...');
+            ReactDOM.createRoot( contactRoot ).render(
+                <React.StrictMode>
+                    <ContactForm />
+                </React.StrictMode>
+            );
+            console.log('✅ app.jsx: ContactForm mounted.');
+        } catch (err) {
+            console.error('❌ app.jsx: Error rendering ContactForm:', err);
+        }
     }
 };
 

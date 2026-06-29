@@ -26,11 +26,11 @@
                 <h4 class="footer-heading">Explore</h4>
                 <ul class="footer-links">
                     <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Shop All Fragrances</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=oud' ) ); ?>">Oud &amp; Resinous</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=floral' ) ); ?>">Floral &amp; Rose</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/shop/?product_tag=citrus' ) ); ?>">Citrus &amp; Fresh</a></li>
-                    <li><a href="#">Gift Sets</a></li>
-                    <li><a href="#">New Arrivals</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shop/?family=oud' ) ); ?>">Oud &amp; Resinous</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shop/?family=floral' ) ); ?>">Floral &amp; Rose</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shop/?family=citrus' ) ); ?>">Citrus &amp; Fresh</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shop/?collection=gift' ) ); ?>">Gift Sets</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shop/?collection=signature' ) ); ?>">New Arrivals</a></li>
                 </ul>
             </div>
 
@@ -38,11 +38,11 @@
             <div class="footer-col">
                 <h4 class="footer-heading">Customer Care</h4>
                 <ul class="footer-links">
-                    <li><a href="#">Track Your Order</a></li>
-                    <li><a href="#">Returns &amp; Exchange</a></li>
-                    <li><a href="#">Shipping Policy</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/track-order/' ) ); ?>">Track Your Order</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/returns-exchange/' ) ); ?>">Returns &amp; Exchange</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/shipping-policy/' ) ); ?>">Shipping Policy</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/faq/' ) ); ?>">FAQ</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact Us</a></li>
                 </ul>
             </div>
 

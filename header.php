@@ -149,28 +149,27 @@ if ( $ep_query->have_posts() ) {
                                 <div class="mega-col">
                                     <h4 class="mega-col-heading">The Journal</h4>
                                     <ul class="mega-links">
-                                        <?php /* Journal posts — coming soon; swap href once blog is live */ ?>
-                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">The Art of Layering</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">Understanding Oud</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">Fragrance and Memory</a></li>
-                                        <li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">How to Choose</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/art-of-layering/' ) ); ?>">The Art of Layering</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/understanding-oud/' ) ); ?>">Understanding Oud</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/fragrance-memory/' ) ); ?>">Fragrance and Memory</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/how-to-choose/' ) ); ?>">How to Choose</a></li>
                                     </ul>
                                 </div>
                                 <div class="mega-col-divider"></div>
                                 <div class="mega-col">
                                     <h4 class="mega-col-heading">About the House</h4>
                                     <ul class="mega-links">
-                                        <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">Our Philosophy</a></li>
-                                        <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">The Ingredients</a></li>
-                                        <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">Sustainability</a></li>
-                                        <li><a href="<?php echo esc_url( get_permalink( 26248 ) ); ?>">Contact</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/our-philosophy/' ) ); ?>">Our Philosophy</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/the-ingredients/' ) ); ?>">The Ingredients</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/sustainability/' ) ); ?>">Sustainability</a></li>
+                                        <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </li>
 
-                    <li><a href="<?php echo esc_url( get_permalink( 26314 ) ); ?>">About</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/our-philosophy/' ) ); ?>">About</a></li>
 
                 </ul>
             </nav>
